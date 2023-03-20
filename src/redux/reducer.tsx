@@ -36,14 +36,26 @@ company: Company
 interface UsersState {
     users: Array<User>,
     status: 'idle' | 'pending' | 'succeeded' | 'failed'|"loading",
-    error: string | null
+    error: string | null,
+    strState: {
+      nameStr: string,
+    usernameStr: string,
+    emailStr: string
+    }
   };
-
+ 
+  
 
 const initialState = { 
     users: [], 
     status: "idle",
-    error: null
+    error: null,
+    strState: {
+      nameStr: "",
+      usernameStr: "",
+      emailStr: ""
+    }
+
 } as UsersState;
 
 
@@ -92,6 +104,44 @@ return {
   
 }
         }
+      },
+      userFilter:  {
+        reducer (state, action: PayloadAction<any>) {
+          state.strState.nameStr = "";
+          state.strState.usernameStr = "";
+          state.strState.emailStr = "";
+          const payload = action.payload[0].toUpperCase() + action.payload.slice(1);
+         const nameFilter= (state.users).filter((user)=>user.name.startsWith(payload));
+        const usernamelFilter= (state.users).filter((user)=>user.username.startsWith(payload));
+        const emailFilter= (state.users).filter((user)=>user.email.startsWith(payload));
+      state.users = [...nameFilter, ...usernamelFilter, ...emailFilter];
+       if (nameFilter.length > 0) {
+        state.strState.nameStr = payload
+       };
+       if (nameFilter) {
+        state.strState.usernameStr = payload
+       };
+       if (nameFilter) {
+        state.strState.emailStr = payload
+       };
+        },
+        prepare (value: string) {
+return {
+  payload: value
+  
+}
+        }
+      },
+      filterReset:  {
+        reducer (state, action: PayloadAction<void>) {
+        state.users = usersAll
+        },
+        prepare () {
+return {
+  payload: undefined
+  
+}
+        }
       }
     },
     extraReducers(builder) {
@@ -111,6 +161,8 @@ return {
     }
   })
 
-  export const { userDelete } = usersSlice.actions
+  export const { userDelete } = usersSlice.actions;
+  export const { filterReset } = usersSlice.actions;
+  export const { userFilter } = usersSlice.actions;
   export default usersSlice.reducer
   //store.dispatch(usersSlice )
