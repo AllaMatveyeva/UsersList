@@ -58,9 +58,19 @@ const initialState = {
 
 } as UsersState;
 
+let usersAll: Array<User>;
 
- export function usersReducer (state = initialState, action: PayloadAction<number>) {
-switch (action.type){
+export function usersReducer (state = initialState, action: PayloadAction<any>) {
+switch (action.type) {
+
+  case "UsersMade": {
+    usersAll = action.payload;
+        return {
+    ...state,
+    users: action.payload,
+    }
+    }
+
 case "UserDelete": {
 const usersFilter= (state.users).filter((user)=>user.id !== action.payload)
     return {
@@ -73,15 +83,44 @@ case "FilterReset": {
       return {
   ...state,
   users: usersAll,
+  strState: {
+    nameStr: "",
+    usernameStr: "",
+    emailStr: ""
   }
   }
+  }
+  case "FilterUsers": {
+    state.strState.nameStr = "";
+    state.strState.usernameStr = "";
+    state.strState.emailStr = "";
+    let nameFilter;
+    let usernamelFilter;
+    let emailFilter;
+    
+    const payload = action.payload[0].toUpperCase() + action.payload.slice(1);
+   nameFilter= (state.users).filter((user)=>user.name.startsWith(payload));
+  usernamelFilter= (state.users).filter((user)=>user.username.startsWith(payload));
+  emailFilter= (state.users).filter((user)=>user.email.startsWith(payload));
+
+return {
+...state,
+users: action.payload  ? [...nameFilter, ...usernamelFilter, ...emailFilter] : state.users,
+strState: {
+nameStr: nameFilter.length > 0 ? payload : "",
+usernameStr: usernamelFilter.length > 0 ? payload : "",
+emailStr: emailFilter.length > 0 ? payload : "",
+
+}
+}
+}
 default:
     return initialState;
 }
 
 };
 
-let usersAll: Array<User>;
+
 
 export const fetchUsers = createAsyncThunk ("users/fetchUsers", async () => {
 const response = await getUsers();
@@ -110,6 +149,7 @@ return {
           state.strState.nameStr = "";
           state.strState.usernameStr = "";
           state.strState.emailStr = "";
+          if(action.payload) {
           const payload = action.payload[0].toUpperCase() + action.payload.slice(1);
          const nameFilter= (state.users).filter((user)=>user.name.startsWith(payload));
         const usernamelFilter= (state.users).filter((user)=>user.username.startsWith(payload));
@@ -118,12 +158,12 @@ return {
        if (nameFilter.length > 0) {
         state.strState.nameStr = payload
        };
-       if (nameFilter) {
+       if (usernamelFilter.length > 0) {
         state.strState.usernameStr = payload
        };
-       if (nameFilter) {
+       if (emailFilter.length > 0) {
         state.strState.emailStr = payload
-       };
+       }} ;
         },
         prepare (value: string) {
 return {
@@ -134,7 +174,10 @@ return {
       },
       filterReset:  {
         reducer (state, action: PayloadAction<void>) {
-        state.users = usersAll
+        state.users = usersAll;
+        state.strState.nameStr = "";
+          state.strState.usernameStr = "";
+          state.strState.emailStr = "";
         },
         prepare () {
 return {
