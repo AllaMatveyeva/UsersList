@@ -10,8 +10,9 @@ export const deleteUser = (payload: number) => ({
     payload: payload
 })
 
-export const reseteFilter = () => ({
+export const resetFilter = (payload: void) => ({
     type: "FilterReset",
+    payload: payload
     
 })
 
@@ -19,3 +20,25 @@ export const usersFilter = (payload: string) => ({
     type: "FilterUsers",
     payload: payload
 })
+
+export const loadingStatus = (payload: string) => ({
+    type: "UsersLoad",
+    payload: payload
+})
+
+export const successStatus = (payload: string) => ({
+    type: "UsersGot",
+    payload: payload
+})
+
+export const errorStatus = (payload: string) => ({
+    type: "UsersError",
+    payload: payload
+})
+
+
+
+
+
+
+

@@ -1,37 +1,39 @@
-import { ElementType, JSXElementConstructor, useEffect, useState,  } from "react";
+import { useEffect } from "react";
 import { UserFilter } from "./UsersFilter";
 import { UserList } from "./UsersList";
 import { List, WrraperApp } from "./styles";
 import { getUsers } from "./api";
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchUsers } from "./redux/reducer";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { CircularIndeterminate } from "./CircularIndeterminate";
-
-
-
+import { errorStatus, makeUsers, successStatus } from "./redux/actions";
 
 const App = () => {
   
-  const users = useAppSelector ( state => state.users.users)
-  
-
-  const usersStatus = useAppSelector  ( state => state.users.status)
-  const error = useAppSelector ( state => state.users.error)
+  const users = useAppSelector ( state => state.users)
+  const usersStatus = useAppSelector  ( state => state.status)
+  const error = useAppSelector ( state => state.error)
   const dispatch = useAppDispatch ();
 
   useEffect(() => {
-    if (usersStatus === 'idle') {
-      dispatch(fetchUsers())
+    const fetchUser = async () => {
+      try {
+        const response = await getUsers();
+        dispatch(makeUsers(response.data));
+        dispatch (successStatus("succeeded"))
+      } catch {
+        console.log(error);
+        dispatch(errorStatus("failed"))
+      } 
     }
+    if (usersStatus === 'idle') {
+
+fetchUser()
+ }
   }, [usersStatus, dispatch]);
 
   let content:any;
+  
 
-  if (usersStatus === 'loading') {
-    content = <CircularIndeterminate/>;
-    
-  } else if (usersStatus === 'succeeded') {
+   if (usersStatus === 'succeeded') {
     
     content =<List> {users.map((user, index) => (
       <UserList key={user.id} user={user} />
@@ -41,8 +43,7 @@ const App = () => {
     content = <div>{error}</div>
   }
 
-
-  return (
+return (
     
    <WrraperApp>
     <UserFilter/>
@@ -53,7 +54,5 @@ const App = () => {
      
   );
 }
-
-
 
 export default App;
