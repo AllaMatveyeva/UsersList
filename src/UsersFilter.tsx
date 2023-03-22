@@ -1,21 +1,22 @@
 import { useState } from "react"
 import { useAppDispatch } from "./app/hooks"
 import { resetFilter, usersFilter } from "./redux/actions"
-import { FilterIcon, InputFilter, ResetIcon, WrapperInput } from "./styles"
-
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import SearchIcon from '@mui/icons-material/Search';
+import "./styles.scss"
 
 export const UserFilter = () => {
 const [value,setValue] = useState<string>("");
 const dispatch = useAppDispatch();
-const handleChange = (e:any) => {
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   setValue(e.target.value);
 dispatch(usersFilter(e.target.value))
 }
     return (
-      <WrapperInput> 
-        <ResetIcon onClick={() => dispatch(resetFilter())}/>
-      <InputFilter type="text" value={value} placeholder={"Search user"} onChange={(e)=>handleChange(e)}/>
-<FilterIcon/>
-      </WrapperInput>
+      <div className="wrapperInput"> 
+        <RestartAltIcon className="resetFilter" onClick={() => dispatch(resetFilter())}/>
+      <input type="text" value={value} placeholder={"Search user"} onChange={(e)=>handleChange(e)}/>
+<SearchIcon className="usersFilter"/>
+      </div>
     )  
   }

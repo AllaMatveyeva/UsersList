@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { UserFilter } from "./UsersFilter";
 import { UserList } from "./UsersList";
-import { List, WrraperApp } from "./styles";
 import { getUsers } from "./api";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { errorStatus, makeUsers, successStatus } from "./redux/actions";
+import "./styles.scss"
 
 const App = () => {
   
@@ -35,21 +35,21 @@ fetchUser()
 
    if (usersStatus === 'succeeded') {
     
-    content =<List> {users.map((user, index) => (
+    content =<ul> {users.map((user, index) => (
       <UserList key={user.id} user={user} />
     ))}
-    </List>
+    </ul>
   } else if (usersStatus === 'failed') {
     content = <div>{error}</div>
   }
 
 return (
     
-   <WrraperApp>
+   <div className="wrrapperApp">
     <UserFilter/>
     
         {content}
-   </WrraperApp>
+   </div>
     
      
   );

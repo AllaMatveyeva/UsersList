@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { deleteUser } from "./redux/actions";
 import { User } from "./redux/reducer";
-import { DeleteUser, Users, UsersearchMatch, WrraperUsers } from "./styles";
 import { ModalWindow } from "./ModalWindow";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
+import "./styles.scss"
+import CloseIcon from '@mui/icons-material/Close';
 
 interface UsersProps {
   user: User;
@@ -25,24 +26,24 @@ export const UserList = ({ user }: UsersProps) => {
     if (str && userProperty.startsWith(str)) {
       content = (
         <>
-          <UsersearchMatch>{userProperty.slice(0, str.length)}</UsersearchMatch>
-          <Users>{userProperty.slice(str.length)}</Users>
+          <span className="usersSearchMarch">{userProperty.slice(0, str.length)}</span>
+          <span className="userDescription">{userProperty.slice(str.length)}</span>
         </>
       );
     } else {
-      content = <Users>{userProperty}</Users>;
+      content = <span className="userDescription">{userProperty}</span>;
     }
     return content;
   };
 
   return (
     <>
-      <WrraperUsers onClick={handleOpen}>
-        <Users>{getContent(str.nameStr, user.name)}</Users>
-        <Users>{getContent(str.usernameStr, user.username)}</Users>
-        <Users>{getContent(str.emailStr, user.email)}</Users>
-        <DeleteUser onClick={() => handleDelete(user.id)} />
-      </WrraperUsers>
+      <li onClick={handleOpen}>
+        <span className="userDescription">{getContent(str.nameStr, user.name)}</span>
+        <span className="userDescription">{getContent(str.usernameStr, user.username)}</span>
+        <span className="userDescription">{getContent(str.emailStr, user.email)}</span>
+        <CloseIcon className="deleteUser" onClick={() => handleDelete(user.id)} />
+      </li>
       <ModalWindow
         open={open}
         onClose={handleClose}

@@ -1,0 +1,99 @@
+.wrrapperApp {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-family: 'Roboto';
+font-size: 20px;
+    ul {
+        max-width: 1000px;
+        min-width: 300px;
+        margin: 0px;
+          padding: 0px;
+          background: rgb(201, 238, 255);
+    }
+    li {
+        display: flex;
+justify-content: center;
+align-items: center;
+border: 1px solid black;
+padding: 5px;
+    }
+}
+
+@mixin user {
+    width: 250px;
+    word-break: break-all; 
+    
+        margin-right: 20px;
+        &:last-child{
+            margin-right: 0px;
+        }
+        @media (max-width: 670px) {
+          width: 75px;
+          margin-right: 25px;
+          font-size: 12px;
+        }
+}
+
+.userDescription {
+    @include user
+}
+
+.usersSearchMarch {
+    @include user;
+    margin: 0;
+    color: rgb(233, 0, 100);
+}
+
+
+
+.wrapperInput {
+    border: 1px solid black;
+text-align: center;
+display: flex;
+justify-content: flex-end;
+align-items: center;
+ margin: 10px;
+ padding: 0px 20px;
+ background: rgb(151, 222, 255);
+
+ input{
+    padding: 20px 40px;
+  border: none;
+  width: 100%;
+ text-align: center;
+ background: none;
+ &:focus{
+    outline: none;
+}
+&::placeholder {
+font-size: 20px;
+@media (max-width: 670px) {
+    font-size: 12px ;
+      } 
+}
+ }
+}
+
+@mixin icon {
+    cursor: pointer;
+    font-size: 28px !important;
+    @media (max-width: 670px) {
+    font-size: 15px !important;
+      } 
+}
+
+.resetFilter { 
+@include icon
+}
+
+.usersFilter {
+    @include icon
+}
+
+.deleteUser {
+    @include icon
+}
+
