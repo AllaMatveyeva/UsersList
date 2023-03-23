@@ -1,8 +1,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { useAppSelector } from "./app/hooks";
-import { Address, Company, Geo, User } from "./redux/reducer";
+import { Address, Company, Geo } from "./interfaces";
 
 interface ModalWindowProps {
   open: boolean;
@@ -17,8 +16,9 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 200,
-  bgcolor: "background.paper",
+  bgcolor: "rgb(201, 238, 255)",
   border: "2px solid #000",
+  borderRadius: "20px",
   boxShadow: 24,
   p: 4,
 };
@@ -29,35 +29,47 @@ export const ModalWindow = ({
   company,
   address,
 }: ModalWindowProps) => {
-  const users = useAppSelector((state) => state.users);
-
+  
   const companyProperty: Array<string> = [
     `name: ${company.name}`,
     `catchPhrase: ${company.catchPhrase}`,
     `bs: ${company.bs}`,
   ];
-  const addressProperty: Array<string> = [
+  const addressProperty: Array<string | Geo> = [
     `city: ${address.city}`,
-    `geo: ${address.geo.lat}`,
+    address.geo,
     `street: ${address.street}`,
     `suite: ${address.suite}`,
     `zipcode: ${address.zipcode}`,
   ];
 
-  const getBoxContent = (name: string, content: Array<string>) => {
+  const getBoxContent = (name: string, content: Array<string | Geo>) => {
     return (
       <>
         <Typography id="modal-modal-title" variant="h6" component="h2">
           {name}
         </Typography>
         <ul id="modal-modal-description">
-          {content.map((cont, index) => (
-            <li key={index}>{cont}</li>
-          ))}
+          {content.map((cont, index) => {
+            let contObj;
+            if (typeof cont === "object") {
+              contObj = Object.entries(cont);
+              return (
+                <li key={index}>
+                  {contObj.map(([keys, value], index) => {
+                    return <span key={index}>{`${keys}: ${value}; `}</span>;
+                  })}
+                </li>
+              );
+            } else {
+              return <li key={index}>{cont}</li>;
+            }
+          })}
         </ul>
       </>
     );
   };
+
   return (
     <div>
       <Modal
