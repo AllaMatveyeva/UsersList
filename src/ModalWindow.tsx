@@ -71,7 +71,7 @@ export const ModalWindow = ({
   };
 
   return (
-    <div>
+    <>
       <Modal
         open={open}
         onClose={onClose}
@@ -83,6 +83,6 @@ export const ModalWindow = ({
           {getBoxContent("Address:", addressProperty)}
         </Box>
       </Modal>
-    </div>
+    </>
   );
 };

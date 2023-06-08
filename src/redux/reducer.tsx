@@ -1,39 +1,21 @@
 import { AnyAction } from "redux";
 import { User } from "../interfaces";
+import {
+  FetchDataActionTypes,
+  FETCH_DATA_FAILURE,
+  FETCH_DATA_REQUEST,
+  FETCH_DATA_SUCCESS,
+  RESET_FILTER,
+  USERS_FILTER,
+  USERS_Reoder,
+  USER_DELETE,
+  USER_REMOVE_BY_DRAG,
+} from "./actions";
 
-// export interface Geo {
-//   lat: string;
-//   lng: string;
-// }
-
-// export interface Address {
-//   street: string;
-//   suite: string;
-//   city: string;
-//   zipcode: string;
-//   geo: Geo;
-// }
-
-// export interface Company {
-//   name: "";
-//   catchPhrase: "";
-//   bs: "";
-// }
-
-// export interface User {
-//   id: number;
-//   name: string;
-//   username: string;
-//   email: string;
-//   address: Address;
-//   phone: string;
-//   website: string;
-//   company: Company;
-// }
 
 interface UsersState {
   users: Array<User>;
-  status: "idle" | "pending" | "succeeded" | "failed" | "loading";
+  loading: boolean;
   error: string | null;
   strState: {
     nameStr: string;
@@ -44,7 +26,7 @@ interface UsersState {
 
 const initialState = {
   users: [],
-  status: "idle",
+  loading: false,
   error: null,
   strState: {
     nameStr: "",
@@ -55,37 +37,31 @@ const initialState = {
 
 let usersAll: Array<User>;
 
-export function users(state = initialState, action: AnyAction) {
+export const dataReducer = (
+  state = initialState,
+  action: FetchDataActionTypes
+): UsersState => {
   switch (action.type) {
-    case "UsersMade": {
+    case FETCH_DATA_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case FETCH_DATA_SUCCESS:
       usersAll = action.payload;
       return {
         ...state,
         users: action.payload,
+        loading: false,
       };
-    }
-    case "UsersLoad": {
+    case FETCH_DATA_FAILURE:
       return {
         ...state,
-        status: action.payload,
+        error: action.payload,
+        loading: false,
       };
-    }
 
-    case "UsersGot": {
-      return {
-        ...state,
-        status: action.payload,
-      };
-    }
-
-    case "UsersError": {
-      return {
-        ...state,
-        status: action.payload,
-      };
-    }
-
-    case "UserDelete": {
+    case USER_DELETE: {
       const usersFilter = state.users.filter(
         (user) => user.id !== action.payload
       );
@@ -94,7 +70,7 @@ export function users(state = initialState, action: AnyAction) {
         users: usersFilter,
       };
     }
-    case "FilterReset": {
+    case RESET_FILTER: {
       return {
         ...state,
         users: usersAll,
@@ -105,7 +81,7 @@ export function users(state = initialState, action: AnyAction) {
         },
       };
     }
-    case "FilterUsers": {
+    case USERS_FILTER: {
       let nameFilter;
       let usernamelFilter;
       let emailFilter;
@@ -113,13 +89,11 @@ export function users(state = initialState, action: AnyAction) {
       const payload = action.payload
         ? action.payload[0].toUpperCase() + action.payload.slice(1)
         : "";
-      nameFilter = usersAll.filter((user) => user.name.startsWith(payload));
-      usernamelFilter = usersAll.filter((user) =>
+      nameFilter = usersAll?.filter((user) => user.name.startsWith(payload));
+      usernamelFilter = usersAll?.filter((user) =>
         user.username.startsWith(payload)
       );
-      emailFilter = usersAll.filter((user) =>
-        user.email.startsWith(payload)
-      );
+      emailFilter = usersAll?.filter((user) => user.email.startsWith(payload));
 
       return {
         ...state,
@@ -133,7 +107,26 @@ export function users(state = initialState, action: AnyAction) {
         },
       };
     }
+    case USERS_Reoder: {
+      const [start, finish] = action.payload;
+      const result = state.users;
+      const [removed] = result.splice(start, 1);
+      result.splice(finish, 0, removed);
+      return {
+        ...state,
+        users: result
+      };
+    }
+    case USER_REMOVE_BY_DRAG: {
+      const start = action.payload;
+      const result = state.users;
+      result.splice(start, 1);
+      return {
+        ...state,
+        users: result
+      };
+    }
     default:
       return initialState;
   }
-}
+};

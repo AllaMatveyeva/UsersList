@@ -1,7 +1,7 @@
 export interface Geo {
     lat: string;
     lng: string;
-  }
+  };
   
   export interface Address {
     street: string;
@@ -9,13 +9,13 @@ export interface Geo {
     city: string;
     zipcode: string;
     geo: Geo;
-  }
+  };
   
   export interface Company {
     name: "";
     catchPhrase: "";
     bs: "";
-  }
+  };
   
   export interface User {
     id: number;
@@ -26,4 +26,4 @@ export interface Geo {
     phone: string;
     website: string;
     company: Company;
-  }
+  };

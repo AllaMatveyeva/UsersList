@@ -1,9 +1,23 @@
-import { users } from "./reducer";
-import { createStore } from "redux";
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import thunk, { ThunkMiddleware } from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { dataReducer } from './reducer';
+import { FetchDataActionTypes } from './actions';
 
-const store = createStore(users);
 
-export type RootState = ReturnType<typeof store.getState>;
+export const rootReducer = combineReducers({
+  data: dataReducer
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+ const store = createStore(
+  rootReducer,
+  composeWithDevTools(
+    applyMiddleware(thunk as ThunkMiddleware<RootState, FetchDataActionTypes>)
+  )
+);
+
 
 export type AppDispatch = typeof store.dispatch;
 

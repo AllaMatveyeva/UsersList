@@ -10,6 +10,7 @@ export const UserFilter = () => {
   const dispatch = useAppDispatch();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
+    
     dispatch(usersFilter(e.target.value));
   };
   return (
